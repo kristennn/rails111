@@ -1,0 +1,6 @@
+<h2>新增群组</h2>
+<%= simple_form_for @group do |f| %>
+  <%= f.input :title %>
+  <%= f.input :description %>
+  <%= f.submit :submit, class: "btn-primary" %>
+<% end %>

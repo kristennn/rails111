@@ -19,6 +19,7 @@ before_action :authenticate_user!, only: [:new, :edit, :create, :update, :destro
   def create
     @group = Group.new(group_params)
     if @group.save
+      @group.user = current_user
       redirect_to groups_path
     else
       render :new
@@ -40,6 +41,26 @@ before_action :authenticate_user!, only: [:new, :edit, :create, :update, :destro
     @group.destroy
     flash[:alert] = "删除成功"
     redirect_to groups_path
+  end
+
+  def join
+    @group = Group.find(params[:id])
+    if !current_user.is_member_of?(@group)
+      current_user.join!(@group)
+      flash[:notice] = "加入讨论版成功"
+    else
+      flash[:warning] = "你已经是本讨论版成员了"
+    end
+  end
+
+  def quit
+    @group = Group.find(params[:id])
+    if current_user.is_member_of?(@group)
+      current_user.quit!(@group)
+      flash[:alert] = "已退出讨论版"
+    else
+      flash[:warning] = "你不是讨论版成员怎么退出"
+    end
   end
 
   private
